@@ -1,7 +1,22 @@
 <?php
 include_once('simple_html_dom.php');
 
-$htmlContent = file_get_html('https://www.hiverhq.com')->plaintext;
+$url = readLine("Enter the url to scrape (defaults to https://www.hiverhq.com): ");
+
+if (empty($url)) {
+  $url = "https://www.hiverhq.com";
+}
+
+echo "\nscraping " . $url . "...";
+
+$dom = file_get_html($url);
+
+if (!$dom) {
+  echo "Invalid URL";
+  exit;
+}
+
+$htmlContent = $dom->plaintext;
 $words = preg_split('/(\s|\n)+/i', $htmlContent);
 $wordCount = [];
 
@@ -22,7 +37,7 @@ uasort($wordCount, function ($a, $b) {
   }
 });
 
-$counterLimit = readline("Enter how many number of most common occurences to be listed (defaults to 5): ");
+$counterLimit = readline("\nEnter how many number of most common occurences to be listed (defaults to 5): ");
 if (!is_numeric($counterLimit)) {
   $counterLimit = 5;
 }
